@@ -19,16 +19,19 @@ class App extends Component {
     window.instagram = instagram
 
     await instagram.init()
-    const { inbox: { threads } } = await instagram.request({ method: 'get_inbox', params: [] }, true)
+
+    const { viewer, inbox: { threads } } = await instagram.request({ method: 'get_inbox', params: [] }, true)
 
     console.log('threads', threads)
 
-    const first_thread = threads[0]
+    const me = viewer.pk
 
     this.setState({
+      me,
       threads,
     })
 
+    const first_thread = threads[0]
     this.loadThread(first_thread)
   }
 
@@ -82,6 +85,7 @@ class App extends Component {
 
         <div className="dialog">
           <Dialog
+            me={this.state.me}
             isLoading={this.state.isLoading}
             selectedThread={this.state.selectedThread}
             messages={this.state.messages}

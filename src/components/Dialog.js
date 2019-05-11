@@ -10,10 +10,11 @@ export default class Dialog extends Component {
 
   componentWillReceiveProps(nextProps) {
     const messages = nextProps.messages.map(item => new Message({
-      id: item.item_id,
+      id: item.user_id === this.props.me ? 0 : item.user_id,
       message: item.text || item.item_type,
-      sender: item.user_id,
     }))
+
+    console.log('me', this.props.me)
 
     this.setState({
       messages,
