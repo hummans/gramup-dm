@@ -2,12 +2,14 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { ChatFeed, Message } from 'react-chat-ui'
+import List from './List'
+import Dialog from './Dialog'
+
 import instagram from './instagram/connector'
 
 class App extends React.Component {
   state = {
-    chats: [],
+    threads: [],
     messages: [],
   }
 
@@ -20,18 +22,21 @@ class App extends React.Component {
     console.log('threads', threads)
 
     const first_thread = threads[0]
-    const { thread: { items } } = await instagram.request({ method: 'get_thread', params: [ first_thread.thread_id ] }, true)
+
+    this.setState({
+      threads,
+    })
+
+    this.loadThread(first_thread)
+  }
+
+  loadThread = async (thread) => {
+    const { thread: { items } } = await instagram.request({ method: 'get_thread', params: [ thread.thread_id ] }, true)
 
     console.log('messages', items)
 
-    const messages = items.map(item => new Message({
-      id: item.item_id,
-      message: item.text || item.item_type,
-    }))
-
     this.setState({
-      chats: threads,
-      messages,
+      messages: items,
     })
   }
 
@@ -41,36 +46,19 @@ class App extends React.Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
-            Edit <code>src/App.js</code> and save to reload.
+            Scroll down to see your inbox
           </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
         </header>
 
-        <ChatFeed
+        <List
+          threads={this.state.threads}
+          selectThread={this.loadThread}
+          />
+
+        <Dialog
           messages={this.state.messages}
-          isTyping={this.state.is_typing}
-          hasInputField={false}
-          showSenderName
-          bubblesCentered={false}
-          bubbleStyles={
-            {
-             text: {
-               fontSize: 30
-             },
-             chatbubble: {
-               borderRadius: 70,
-               padding: 40
-             }
-            }
-          }
-        />
+          />
+
       </div>
     );
   }
