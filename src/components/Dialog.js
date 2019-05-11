@@ -23,7 +23,7 @@ export default class Dialog extends Component {
 
   render() {
     if (this.props.isLoading) {
-      return (<div className="dialog">Loading...</div>)
+      return (<div className="dialog"><h1>Loading...</h1></div>)
     }
 
     return (

@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import './App.css'
 
 import instagram from './instagram/connector'
+import { get_inbox, get_thread, send_direct_item } from './instagram'
+
 import { List, Dialog, SendMessage } from './components'
 
 class App extends Component {
@@ -16,11 +18,11 @@ class App extends Component {
   messagesEnd = React.createRef()
 
   async componentDidMount() {
-    window.instagram = instagram
+    // window.instagram = instagram
 
     await instagram.init()
 
-    const { viewer, inbox: { threads } } = await instagram.request({ method: 'get_inbox', params: [] }, true)
+    const { viewer, inbox: { threads } } = await get_inbox()
 
     console.log('threads', threads)
 
@@ -30,9 +32,9 @@ class App extends Component {
       me,
       threads,
     })
-
-    const first_thread = threads[0]
-    this.loadThread(first_thread)
+    //
+    // const first_thread = threads[0]
+    // this.loadThread(first_thread.thread_id)
   }
 
   scrollToBottom = (force = false) => {
@@ -43,10 +45,20 @@ class App extends Component {
     target.parentNode.scrollTop = target.offsetTop
   }
 
-  loadThread = async (thread) => {
+  loadThread = async (thread_id) => {
+    if (!thread_id) {
+      this.setState({
+        isLoading: false,
+        selectedThread: null,
+        messages: [],
+      })
+      return
+    }
+
     this.setState({ isLoading: true })
 
-    const { thread: { items } } = await instagram.request({ method: 'get_thread', params: [ thread.thread_id ] }, true)
+    const { thread } = await get_thread(thread_id)
+    const { items } = thread
 
     console.log('messages', items)
 
@@ -57,42 +69,48 @@ class App extends Component {
     }, () => this.scrollToBottom())
   }
 
-  sendMessage = async (thread, text) => {
+  sendMessage = async (recipient, text) => {
     this.setState({ isLoading: true })
 
     console.log('send dm', text)
 
-    const params = [ 'text', { thread: thread.thread_id, text } ]
+    const { status } = await send_direct_item(recipient, text)
 
-    console.log('send dm params', params)
-
-    const { status } = await instagram.request({ method: 'send_direct_item', params }, true)
+    if (status !== 'ok') {
+      alert('Error sending: status=' + status)
+    }
 
     console.log('status', status)
 
-    this.loadThread(thread)
+    if (recipient.thread) {
+      this.loadThread(recipient.thread)
+    }
   }
 
   render () {
+    const { me, isLoading, threads, selectedThread, messages } = this.state
+
     return (
       <div className="App">
 
         <List
-          threads={this.state.threads}
-          selectedThread={this.state.selectedThread}
+          threads={threads}
+          selectedThread={selectedThread}
           selectThread={this.loadThread}
           />
 
         <div className="dialog">
-          <Dialog
-            me={this.state.me}
-            isLoading={this.state.isLoading}
-            selectedThread={this.state.selectedThread}
-            messages={this.state.messages}
-            />
+          {!!selectedThread && (
+            <Dialog
+              me={me}
+              isLoading={isLoading}
+              selectedThread={selectedThread}
+              messages={messages}
+              />
+          )}
 
           <SendMessage
-            selectedThread={this.state.selectedThread}
+            selectedThread={selectedThread}
             sendMessage={this.sendMessage}
             />
 

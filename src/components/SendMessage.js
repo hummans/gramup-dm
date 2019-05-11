@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
+import React, { Fragment, Component } from 'react'
 
 export default class SendMessage extends Component {
   state = {
     isTyping: false,
     text: '',
+    username: '',
   }
 
   sendMessageRef = React.createRef()
@@ -16,28 +17,50 @@ export default class SendMessage extends Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      selectedThread: nextProps.selectedThread,
-    })
-  }
-
   submitMessage = event => {
     event.preventDefault()
-    
-    const { selectedThread, text } = this.state
+
+    const { text } = this.state
 
     if (!text) return
 
-    this.props.sendMessage(selectedThread, text)
+    const { selectedThread } = this.props
+
+    if (selectedThread) {
+      this.props.sendMessage({ thread: selectedThread.thread_id }, text)
+    } else {
+      const { username } = this.state
+
+      this.props.sendMessage({ username }, text)
+    }
+
+    this.setState({
+      text: ''
+    })
   }
 
+
   render() {
+    const { selectedThread } = this.props
+
     return (
       <div className="dialog-send-message">
         <form onSubmit={this.submitMessage}>
+          {!selectedThread && (
+            <Fragment>
+              <input
+                type="text" name="username"
+                placeholder="@username"
+                onChange={this.handleChange}
+                value={this.state.username}
+                />
+            </Fragment>
+          )}
+          <br />
+
           <input
             type="text" name="text"
+            className="message-text"
             onChange={this.handleChange}
             value={this.state.text}
             />
