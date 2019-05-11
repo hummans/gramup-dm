@@ -1,11 +1,6 @@
 import React, { Component } from 'react'
 import { ChatFeed, Message } from 'react-chat-ui'
 
-const styles = {
-  overflowY: 'scroll',
-  width: '65%',
-  height: '100%',
-}
 
 export default class Dialog extends Component {
   state = {
@@ -26,12 +21,15 @@ export default class Dialog extends Component {
   }
 
   render() {
+    if (this.props.isLoading) {
+      return (<div className="dialog">Loading...</div>)
+    }
+
     return (
-      <div style={styles}>
+      <div>
         <ChatFeed
           messages={this.state.messages}
           isTyping={this.state.isTyping}
-          hasInputField={false}
           showSenderName
           bubblesCentered={false}
           bubbleStyles={

@@ -1,16 +1,16 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-import List from './List'
-import Dialog from './Dialog'
+import React, { Component } from 'react'
+import logo from './logo.svg'
+import './App.css'
 
 import instagram from './instagram/connector'
+import { List, Dialog, SendMessage } from './components'
 
-class App extends React.Component {
+class App extends Component {
   state = {
     threads: [],
     messages: [],
+    selectedThread: null,
+    isLoading: false,
   }
 
   async componentDidMount() {
@@ -31,34 +31,57 @@ class App extends React.Component {
   }
 
   loadThread = async (thread) => {
+    this.setState({ isLoading: true })
+
     const { thread: { items } } = await instagram.request({ method: 'get_thread', params: [ thread.thread_id ] }, true)
 
     console.log('messages', items)
 
     this.setState({
-      messages: items,
+      isLoading: false,
+      selectedThread: thread,
+      messages: items.reverse(),
     })
+  }
+
+  sendMessage = async (thread, text) => {
+    this.setState({ isLoading: true })
+
+    console.log('send dm', text)
+
+    const params = [ 'text', { thread: thread.thread_id, text } ]
+
+    console.log('send dm params', params)
+
+    const { status } = await instagram.request({ method: 'send_direct_item', params }, true)
+
+    console.log('status', status)
+
+    this.loadThread(thread)
   }
 
   render () {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Scroll down to see your inbox
-          </p>
-        </header>
 
         <List
           threads={this.state.threads}
+          selectedThread={this.state.selectedThread}
           selectThread={this.loadThread}
           />
 
-        <Dialog
-          messages={this.state.messages}
-          />
+        <div className="dialog">
+          <Dialog
+            isLoading={this.state.isLoading}
+            selectedThread={this.state.selectedThread}
+            messages={this.state.messages}
+            />
 
+          <SendMessage
+            selectedThread={this.state.selectedThread}
+            sendMessage={this.sendMessage}
+            />
+        </div>
       </div>
     );
   }
