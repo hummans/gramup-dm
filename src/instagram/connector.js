@@ -86,47 +86,47 @@ class InstagramConnector {
     if (wake && !wasWorking) this.kill()
   })
 
-//   request_generator = async function * ({ method, params }, limit = Infinity) {
-//     let _users = []
-//     let generator = this.page_generator({ method, params })
+  request_generator = async function * ({ method, params }, limit = Infinity) {
+    let _users = []
+    let generator = this.page_generator({ method, params })
 
-//     do {
-//       const { users } = generator.next()
+    do {
+      const { users } = generator.next()
 
-//       console.log('users', users)
+      console.log('users', users)
 
-//       _users = [ ..._users, ...users ]
+      _users = [ ..._users, ...users ]
 
-//       const shouldStop = yield users
+      const shouldStop = yield users
 
-//       if (_users.length > limit) {
-//         return _users
-//       }
+      if (shouldStop || _users.length > limit) {
+        return _users
+      }
 
-//     } while(true)
+    } while(true)
 
-//   }
+  }
 
-//   page_generator = async function * ({ method, params }) {
-//     let _params = params
+  page_generator = async function * ({ method, params }) {
+    let _params = params
 
-//     do {
-//       const payload = { method, params: _params }
-//       const { big_list, next_max_id, ...rest } = await this.request(payload)
+    do {
+      const payload = { method, params: _params }
+      const { big_list, next_max_id, ...rest } = await this.request(payload)
 
-//       console.log('big_list', big_list, 'next_max_id', next_max_id)
+      console.log('big_list', big_list, 'next_max_id', next_max_id)
 
-//       const shouldStop = yield rest
+      const shouldStop = yield rest
 
-//       if (shouldStop || !next_max_id) {
-//         return
-//       }
+      if (shouldStop || !next_max_id) {
+        return
+      }
 
-//       _params = [ ...params, next_max_id ]
+      _params = [ ...params, next_max_id ]
 
-//     } while(true)
+    } while(true)
 
-//   }
+  }
 
 }
 
