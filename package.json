@@ -13,8 +13,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "configure-gh-pages": "cp src/CNAME build/CNAME",
     "deploy": "gh-pages -d build",
-    "predeploy": "npm run build"
+    "predeploy": "npm run build && npm run configure-gh-pages"
   },
   "eslintConfig": {
     "extends": "react-app"
