@@ -22,20 +22,30 @@ export default class SendMessage extends Component {
     })
   }
 
-  render() {
+  submitMessage = event => {
+    event.preventDefault()
+    
     const { selectedThread, text } = this.state
 
+    if (!text) return
+
+    this.props.sendMessage(selectedThread, text)
+  }
+
+  render() {
     return (
       <div className="dialog-send-message">
-        <input
-          type="text" name="text"
-          onChange={this.handleChange}
-          value={this.state.text}
-          />
+        <form onSubmit={this.submitMessage}>
+          <input
+            type="text" name="text"
+            onChange={this.handleChange}
+            value={this.state.text}
+            />
 
-        <button onClick={() => this.props.sendMessage(selectedThread, text)}>
-          Send
-        </button>
+          <button onClick={this.submitMessage}>
+            Send
+          </button>
+        </form>
       </div>
     )
   }
