@@ -1,4 +1,5 @@
 import React, { Fragment, Component } from 'react'
+import ym from 'react-yandex-metrika'
 
 export default class SendMessage extends Component {
   state = {
@@ -28,10 +29,12 @@ export default class SendMessage extends Component {
 
     if (selectedThread) {
       this.props.sendMessage({ thread: selectedThread.thread_id }, text)
+      ym('reachGoal', 'dm-message-sent', { thread: selectedThread.thread_id })
     } else {
       const { username } = this.state
 
       this.props.sendMessage({ username }, text)
+      ym('reachGoal', 'dm-message-sent', { username })
     }
 
     this.setState({

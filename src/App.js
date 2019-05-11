@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import './App.css'
 
+import { YMInitializer } from 'react-yandex-metrika'
+
 import instagram from './instagram/connector'
 import { get_inbox, get_thread, send_direct_item } from './instagram'
 
@@ -118,6 +120,7 @@ class App extends Component {
             ref={this.messagesEnd}>
           </div>
         </div>
+        <YMInitializer accounts={[53083903]} />
       </div>
     );
   }
