@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import { ChatFeed, Message } from 'react-chat-ui'
 
+const styles = {
+  overflowY: 'scroll',
+  width: '65%',
+  height: '100%',
+}
+
 export default class Dialog extends Component {
   state = {
     isTyping: false,
@@ -21,24 +27,26 @@ export default class Dialog extends Component {
 
   render() {
     return (
-      <ChatFeed
-        messages={this.state.messages}
-        isTyping={this.state.isTyping}
-        hasInputField={false}
-        showSenderName
-        bubblesCentered={false}
-        bubbleStyles={
-          {
-           text: {
-             fontSize: 20
-           },
-           chatbubble: {
-             borderRadius: 30,
-             padding: 20
-           }
+      <div style={styles}>
+        <ChatFeed
+          messages={this.state.messages}
+          isTyping={this.state.isTyping}
+          hasInputField={false}
+          showSenderName
+          bubblesCentered={false}
+          bubbleStyles={
+            {
+              text: {
+                fontSize: 20
+              },
+              chatbubble: {
+                borderRadius: 30,
+                padding: 20
+              }
+            }
           }
-        }
-      />
+          />
+      </div>
     )
   }
 }
