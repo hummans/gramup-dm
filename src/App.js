@@ -10,7 +10,10 @@ class App extends Component {
     messages: [],
     selectedThread: null,
     isLoading: false,
+    autoScroll: true,
   }
+
+  messagesEnd = React.createRef()
 
   async componentDidMount() {
     window.instagram = instagram
@@ -29,6 +32,14 @@ class App extends Component {
     this.loadThread(first_thread)
   }
 
+  scrollToBottom = (force = false) => {
+    if (!this.state.autoScroll && !force) return
+
+    const target = this.messagesEnd.current
+
+    target.parentNode.scrollTop = target.offsetTop
+  }
+
   loadThread = async (thread) => {
     this.setState({ isLoading: true })
 
@@ -40,7 +51,7 @@ class App extends Component {
       isLoading: false,
       selectedThread: thread,
       messages: items.reverse(),
-    })
+    }, () => this.scrollToBottom())
   }
 
   sendMessage = async (thread, text) => {
@@ -80,6 +91,10 @@ class App extends Component {
             selectedThread={this.state.selectedThread}
             sendMessage={this.sendMessage}
             />
+
+          <div style={{ float: "left", clear: "both" }}
+            ref={this.messagesEnd}>
+          </div>
         </div>
       </div>
     );
