@@ -31,7 +31,9 @@ export default class SendMessage extends Component {
       this.props.sendMessage({ thread: selectedThread.thread_id }, text)
       ym('reachGoal', 'dm-message-sent', { thread: selectedThread.thread_id })
     } else {
-      const { username } = this.state
+      let { username } = this.state
+
+      username = username.replace('@', '')
 
       this.props.sendMessage({ username }, text)
       ym('reachGoal', 'dm-message-sent', { username })
@@ -64,6 +66,7 @@ export default class SendMessage extends Component {
           <input
             type="text" name="text"
             className="message-text"
+            autoComplete="off"
             onChange={this.handleChange}
             value={this.state.text}
             />

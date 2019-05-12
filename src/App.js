@@ -93,6 +93,7 @@ class App extends Component {
       <div className="App">
 
         <List
+          me={me}
           threads={threads}
           selectedThread={selectedThread}
           selectThread={this.loadThread}
