@@ -20,8 +20,6 @@ class App extends Component {
   messagesEnd = React.createRef()
 
   async componentDidMount() {
-    // window.instagram = instagram
-
     await instagram.init()
 
     const { viewer, inbox: { threads } } = await get_inbox()
@@ -34,9 +32,6 @@ class App extends Component {
       me,
       threads,
     })
-    //
-    // const first_thread = threads[0]
-    // this.loadThread(first_thread.thread_id)
   }
 
   scrollToBottom = (force = false) => {
@@ -48,6 +43,8 @@ class App extends Component {
   }
 
   loadThread = async (thread_id) => {
+    console.log('load thread', thread_id)
+
     if (!thread_id) {
       this.setState({
         isLoading: false,
@@ -102,14 +99,12 @@ class App extends Component {
           />
 
         <div className="dialog">
-          {!!selectedThread && (
-            <Dialog
-              me={me}
-              isLoading={isLoading}
-              selectedThread={selectedThread}
-              messages={messages}
-              />
-          )}
+          <Dialog
+            me={me}
+            isLoading={isLoading}
+            selectedThread={selectedThread}
+            messages={messages}
+            />
 
           <SendMessage
             selectedThread={selectedThread}

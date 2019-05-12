@@ -23,7 +23,11 @@ export default class Dialog extends Component {
 
   render() {
     if (this.props.isLoading) {
-      return (<div className="dialog"><h1>Loading...</h1></div>)
+      return (<h1>Loading...</h1>)
+    }
+
+    if (!this.props.selectedThread) {
+      return (<h1>Send message to username</h1>)
     }
 
     return (
