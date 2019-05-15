@@ -52,6 +52,14 @@ class Topbar extends Component {
 
           <li className="nav-item">
             <span className="nav-link">
+              <img src="https://insta.gramup.me/client/img/icon.png" height="30" />&nbsp;<span>Instagram Direct by</span>&nbsp;<a href="https://gramup.me" target="_blank">Gram Up!</a>
+            </span>
+          </li>
+
+          <div className="topbar-divider d-none d-sm-block"></div>
+
+          <li className="nav-item">
+            <span className="nav-link">
               <div id="codefund" ref={el => this.codefundAdRef = el}>CODEFUND AD</div>
             </span>
           </li>
