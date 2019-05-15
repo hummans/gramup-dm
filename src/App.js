@@ -6,7 +6,7 @@ import { YMInitializer } from 'react-yandex-metrika'
 import instagram from './instagram/connector'
 import { get_inbox, get_thread, send_direct_item } from './instagram'
 
-import { List, Dialog, SendMessage } from './components'
+import { Topbar, List, Dialog, SendMessage } from './components'
 
 class App extends Component {
   state = {
@@ -21,6 +21,8 @@ class App extends Component {
 
   async componentDidMount() {
     await instagram.init()
+
+    window.instagram = instagram
 
     const { viewer, inbox: { threads } } = await get_inbox()
 
@@ -90,33 +92,45 @@ class App extends Component {
     const { me, isLoading, threads, selectedThread, messages } = this.state
 
     return (
-      <div className="App">
+      <div id="wrapper">
 
-        <List
-          me={me}
-          threads={threads}
-          selectedThread={selectedThread}
-          selectThread={this.loadThread}
-          />
+        {/* <!-- Content Wrapper  --> */}
 
-        <div className="dialog">
-          <Dialog
-            me={me}
-            isLoading={isLoading}
-            selectedThread={selectedThread}
-            messages={messages}
-            />
+        <div id="content-wrapper" className="d-flex flex-column">
+          {/* <!-- Main Content  --> */}
+          <div id="content">
+            <Topbar connection={{}} instagram={{}} user={{ }} />
 
-          <SendMessage
-            selectedThread={selectedThread}
-            sendMessage={this.sendMessage}
-            />
+            <div className="App">
 
-          <div style={{ float: "left", clear: "both" }}
-            ref={this.messagesEnd}>
+              <List
+                me={me}
+                threads={threads}
+                selectedThread={selectedThread}
+                selectThread={this.loadThread}
+                />
+
+              <div className="dialog">
+                <Dialog
+                  me={me}
+                  isLoading={isLoading}
+                  selectedThread={selectedThread}
+                  messages={messages}
+                  />
+
+                <SendMessage
+                  selectedThread={selectedThread}
+                  sendMessage={this.sendMessage}
+                  />
+
+                <div style={{ float: "left", clear: "both" }}
+                  ref={this.messagesEnd}>
+                </div>
+              </div>
+              <YMInitializer accounts={[53083903]} />
+            </div>
           </div>
         </div>
-        <YMInitializer accounts={[53083903]} />
       </div>
     );
   }
