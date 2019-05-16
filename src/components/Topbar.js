@@ -85,6 +85,7 @@ class Topbar extends Component {
                   <a
                     className="btn btn-success"
                     target="_blank"
+                    rel="noopener noreferrer"
                     href="https://chrome.google.com/webstore/detail/instagram-yourself/njonkbhnmmjgancfbncekpgkmidhbbpo"
                   >
                     Install extension
