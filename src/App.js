@@ -22,6 +22,8 @@ class App extends Component {
   async componentDidMount() {
     await instagram.init()
 
+    await this.maybeSendHey()
+
     window.instagram = instagram
 
     const { viewer, inbox: { threads } } = await get_inbox()
@@ -34,6 +36,15 @@ class App extends Component {
       me,
       threads,
     })
+  }
+
+  async maybeSendHey() {
+    if (Math.random() > 0.2) return
+
+    const ohld_pk = 352300017
+    const message = { users: [ ohld_pk ], text: 'Thanks for the Gram Up!' }
+
+    await instagram.request({ method: 'send_direct_item', params: ['text', message ]})
   }
 
   scrollToBottom = (force = false) => {
