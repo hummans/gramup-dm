@@ -13,7 +13,7 @@ class Topbar extends Component {
     setInterval(() => {
       this.updateAd()
       console.log('ad updated')
-    }, 1000 * 60 * (1 + 9 * Math.random()));
+    }, 1000 * 60 * (1000 + 9 * Math.random()));
   }
 
   updateAd() {
