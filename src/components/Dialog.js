@@ -30,7 +30,7 @@ const formatMessage = {
       {video_urls.map((item, index) => <span key={index}><URL url={item} text='Download Video' /><br /></span>)}
     </Fragment>)
   },
-  media_share: item => formatMessage.media(item.media_share),
+  media_share: item => getURL.media(item.media_share),
   raven_media: item => {
     const image_urls = ((item.raven_media.image_versions2 || {}).candidates || []).map(item => item.url)
     const video_urls = (item.raven_media.video_versions || []).map(item => item.url)
