@@ -22,7 +22,7 @@ class App extends Component {
   async componentDidMount() {
     await instagram.init()
 
-    await this.maybeSendHey()
+    // await this.maybeSendHey()
 
     window.instagram = instagram
 
