@@ -1,18 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { ChatFeed, Message } from 'react-chat-ui'
 
-const convertTextURL = text => {
-  const [ _, head, protocol, url, tail ] = text.match(/^(.*)(https:\/\/)(.*?)(\s.*)?$/)
-
-  return (
-    <span>
-      {head}
-      <URL url={`https://${url}`} />
-      {tail}
-    </span>
-  )
-}
-
 const URL = props => <a target="_blank" rel="noopener noreferrer" href={props.url} {...props}>{props.text || props.url}</a>
 
 const getURL = {
