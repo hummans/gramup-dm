@@ -21,19 +21,23 @@ const getURL = {
 
 const formatMessage = {
   media: item => {
-    const image_urls = ((item.media.image_versions2 || {}).candidates || []).map(item => item.url)
-    const video_urls = (item.media.video_versions || []).map(item => item.url)
+    const media = item.media
+
+    const image_urls = ((media.image_versions2 || {}).candidates || []).map(item => item.url)
+    const video_urls = (media.video_versions || []).map(item => item.url)
 
     return (<Fragment>
-      {`raven_media`}<br />
+      {`media`}<br />
       {image_urls.map((item, index) => <span key={index}><URL url={item} text='Download Image' /><br /></span>)}
       {video_urls.map((item, index) => <span key={index}><URL url={item} text='Download Video' /><br /></span>)}
     </Fragment>)
   },
   media_share: item => getURL.media(item.media_share),
   raven_media: item => {
-    const image_urls = ((item.raven_media.image_versions2 || {}).candidates || []).map(item => item.url)
-    const video_urls = (item.raven_media.video_versions || []).map(item => item.url)
+    const media = item.raven_media
+
+    const image_urls = ((media.image_versions2 || {}).candidates || []).map(item => item.url)
+    const video_urls = (media.video_versions || []).map(item => item.url)
 
     return (<Fragment>
       {`raven_media`}<br />
@@ -41,7 +45,22 @@ const formatMessage = {
       {video_urls.map((item, index) => <span key={index}><URL url={item} text='Download Video' /><br /></span>)}
     </Fragment>)
   },
-  story_share: item => `story_share`,
+  story_share: item => {
+    const media = item.story_share.media
+
+    if (!media) return `${item.story_share.title} ${item.story_share.text}`
+
+    const image_urls = ((media.image_versions2 || {}).candidates || []).map(item => item.url)
+    const video_urls = (media.video_versions || []).map(item => item.url)
+
+    return (<Fragment>
+      {`story_share`}<br />
+      {item.story_share.text}<br />
+      {image_urls.map((item, index) => <span key={index}><URL url={item} text='Download Image' /><br /></span>)}
+      {video_urls.map((item, index) => <span key={index}><URL url={item} text='Download Video' /><br /></span>)}
+    </Fragment>)
+
+  },
   reel_share: item => `reel_share ${item.reel_share.type}: ${item.reel_share.text}`,
 
 }
