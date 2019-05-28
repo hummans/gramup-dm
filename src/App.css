@@ -47,3 +47,7 @@
 .dialog-send-message .message-text {
   width: 80%;
 }
+
+.chat-messages a {
+  color: white;
+}
