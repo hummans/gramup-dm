@@ -15,7 +15,7 @@ const formatMessage = {
     const video_urls = (media.video_versions || []).map(item => item.url)
 
     return (<Fragment>
-      {`media`}<br />
+      {`Media`}<br />
       {image_urls.map((item, index) => <span key={index}><URL url={item} text='Download Image' /><br /></span>)}
       {video_urls.map((item, index) => <span key={index}><URL url={item} text='Download Video' /><br /></span>)}
     </Fragment>)
@@ -28,7 +28,7 @@ const formatMessage = {
     const video_urls = (media.video_versions || []).map(item => item.url)
 
     return (<Fragment>
-      {`raven_media`}<br />
+      {`Private Photo or Video`}<br />
       {image_urls.map((item, index) => <span key={index}><URL url={item} text='Download Image' /><br /></span>)}
       {video_urls.map((item, index) => <span key={index}><URL url={item} text='Download Video' /><br /></span>)}
     </Fragment>)
@@ -42,15 +42,28 @@ const formatMessage = {
     const video_urls = (media.video_versions || []).map(item => item.url)
 
     return (<Fragment>
-      {`story_share`}<br />
+      {`Story Share`}<br />
       {item.story_share.text}<br />
       {image_urls.map((item, index) => <span key={index}><URL url={item} text='Download Image' /><br /></span>)}
       {video_urls.map((item, index) => <span key={index}><URL url={item} text='Download Video' /><br /></span>)}
     </Fragment>)
 
   },
-  reel_share: item => `reel_share ${item.reel_share.type}: ${item.reel_share.text}`,
+  reel_share: item => {
+    const media = item.reel_share.media
 
+    if (!media) return `Story ${item.reel_share.type}: ${item.reel_share.text}`
+
+    const image_urls = ((media.image_versions2 || {}).candidates || []).map(item => item.url)
+    const video_urls = (media.video_versions || []).map(item => item.url)
+
+    return (<Fragment>
+      {`Story ${item.reel_share.type}: ${item.reel_share.text}`}<br />
+      {image_urls.map((item, index) => <span key={index}><URL url={item} text='Download Image' /><br /></span>)}
+      {video_urls.map((item, index) => <span key={index}><URL url={item} text='Download Video' /><br /></span>)}
+    </Fragment>)
+  },
+  placeholder: item => `Voice message or GIF (Unsupported in Gram Up! DM)`
 }
 
 export default class Dialog extends Component {
