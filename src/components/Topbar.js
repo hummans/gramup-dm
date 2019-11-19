@@ -17,22 +17,6 @@ class Topbar extends Component {
   }
 
   updateAd() {
-    const ad_script = document.querySelector("#codefund-ad-script")
-    const ad = document.querySelector("#codefund")
-
-    if (ad_script) {
-      ad_script.remove()
-    }
-
-    ad.innerHTML = "";
-
-    const script = document.createElement("script");
-
-    script.id = "codefund-ad-script";
-    script.src = "https://codefund.app/properties/285/funder.js";
-    script.async = true;
-
-    document.body.appendChild(script);
   }
 
   render () {
