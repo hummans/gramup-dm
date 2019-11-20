@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 // import { Button } from './dumb/Button'
 // import { connect } from 'react-redux'
+import icon from '../icon.png'
 
 const CONNECTION = {}
 
@@ -36,7 +37,7 @@ class Topbar extends Component {
 
           <li className="nav-item">
             <span className="nav-link">
-              <img src="https://insta.gramup.me/client/img/icon.png" height="30" alt="logo"/>&nbsp;<span>Instagram Direct by</span>&nbsp;<a href="https://gramup.me" target="_blank" rel="noopener noreferrer">Gram Up!</a>
+              <img src={icon} height="30" alt="logo"/>&nbsp;<span>Instagram Direct by</span>&nbsp;<a href="https://gramup.me" target="_blank" rel="noopener noreferrer">Gram Up!</a>
             </span>
           </li>
 
@@ -44,7 +45,9 @@ class Topbar extends Component {
 
           <li className="nav-item">
             <span className="nav-link">
-              <div id="codefund" ref={el => this.codefundAdRef = el}>CODEFUND AD</div>
+              <a href="http://deloplen.com/afu.php?zoneid=2940718">
+                Click to save Gram Up!
+              </a>
             </span>
           </li>
 
