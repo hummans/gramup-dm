@@ -116,7 +116,7 @@ export default {
       this.getInbox()
     },
     async getUser() {
-      const { user } = await instagram.request({ method: 'check_login' })
+      const { user } = await instagram.request({ method: 'check_login' }, true)
 
       if (user) {
         this.user = user
@@ -132,7 +132,7 @@ export default {
     },
     logout() {
       // axios.post('/api/logout')
-      instagram.request({ method: 'logout' })
+      instagram.request({ method: 'logout' }, true)
         .then(() => goToLogin('logout'))
     },
 
