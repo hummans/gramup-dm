@@ -40,7 +40,6 @@
         class="text-input"
         placeholder="Type here..."
         v-on:keydown="onTextChange"
-        :disabled="isDisabled"
       />
       <div v-if="filePreviewUrl" class="file-preview-close" @click="clearFile">
         <svg width="20px" height="20px" viewBox="0 0 7 7" aria-label="delete">
@@ -97,7 +96,7 @@ export default {
   },
   data() {
     return {
-      isDisabled: false,
+      isSending: false,
       message: '',
       file: null,
       showEmojiPicker: false,
@@ -129,8 +128,14 @@ export default {
       this.file = null
     },
     onTextChange(e) {
+      if (this.isSending) {
+        event.preventDefault()
+        return
+      }
+
       // if (e.keyCode === 13 && (e.metaKey || e.shiftKey)) {
       if (e.keyCode === 13 && !e.shiftKey) {
+        event.preventDefault()
         this.onSubmit()
       }
     },
@@ -142,15 +147,14 @@ export default {
       this.file = null
     },
     async sendMessage() {
-      this.isDisabled = true
+      this.isSending = true
 
       await send_direct_item({ thread: this.threadId }, this.message)
 
       this.$emit('refetch')
       this.message = ''
 
-      this.isDisabled = false
-      this.$refs['text-input'].focus()
+      this.isSending = false
 
       // axios
       //   .post('/api/send-message', {
