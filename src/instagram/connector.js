@@ -176,7 +176,7 @@ class InstagramConnector {
 
       const shouldStop = yield users
 
-      if (_users.length > limit) {
+      if (shouldStop || _users.length > limit) {
         return _users
       }
     } while (true)
