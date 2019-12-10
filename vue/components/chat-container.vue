@@ -250,10 +250,10 @@ export default {
 }
 
 .chat-message {
-  white-space: pre;
-  padding: 5px 15px;
+  white-space: pre-wrap;
+  padding: 10px 15px;
   border-radius: 20px;
-  line-height: 26px;
+  line-height: 1.5rem;
 }
 
 .message-preface {
