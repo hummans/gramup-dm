@@ -38,7 +38,9 @@ import Media from './chat-items/media'
 import AnimatedMedia from './chat-items/animated-media'
 import StoryShare from './chat-items/story-share'
 import ChatForm from './chat-form'
-import axios from 'axios'
+// import axios from 'axios'
+
+import { get_thread } from '../instagram'
 import _ from 'lodash'
 
 export default {
@@ -106,28 +108,55 @@ export default {
     if (this.pollInterval) clearInterval(this.pollInterval)
   },
   methods: {
-    getThread(id = this.threadId) {
-      axios.get(`/api/thread/${id}`).then(({ data }) => {
-        this.thread = data.thread
-        this.cursor = data.cursor
-        this.$nextTick(() => {
-          this.scrollToBottom()
-        })
+    async getThread(id = this.threadId) {
+      const { thread } = await get_thread(id)
+      console.log('thread', thread)
+
+      this.thread = thread
+      this.cursor = thread.prev_cursor
+
+      this.$nextTick(() => {
+        this.scrollToBottom()
       })
+
+      // axios.get(`/api/thread/${id}`).then(({ data }) => {
+      //   this.thread = data.thread
+      //   this.cursor = data.cursor
+      //   this.$nextTick(() => {
+      //     this.scrollToBottom()
+      //   })
+      // })
     },
-    refetchItems() {
-      axios.get(`/api/thread/${this.threadId}`).then(({ data }) => {
-        const hasNewMessage = data.thread.items.find(item => this.thread.items.every(el => el.item_id !== item.item_id))
-        if (hasNewMessage) {
-          this.thread = {
-            ...data.thread,
-            items: _.uniqBy([...this.thread.items, ...data.thread.items], 'item_id'),
-          }
-          this.$nextTick(() => {
-            this.scrollToBottom()
-          })
-        }
+    async refetchItems() {
+      const { thread } = await get_thread(this.threadId)
+      console.log('thread', thread)
+
+      const hasNewMessage = thread.items.find(item => this.thread.items.every(el => el.item_id !== item.item_id))
+
+      if (!hasNewMessage) {
+        return
+      }
+
+      this.thread = {
+        ...thread,
+        items: _.uniqBy([...this.thread.items, ...thread.items], 'item_id'),
+      }
+
+      this.$nextTick(() => {
+        this.scrollToBottom()
       })
+      // axios.get(`/api/thread/${this.threadId}`).then(({ data }) => {
+      //   const hasNewMessage = data.thread.items.find(item => this.thread.items.every(el => el.item_id !== item.item_id))
+      //   if (hasNewMessage) {
+      //     this.thread = {
+      //       ...data.thread,
+      //       items: _.uniqBy([...this.thread.items, ...data.thread.items], 'item_id'),
+      //     }
+      //     this.$nextTick(() => {
+      //       this.scrollToBottom()
+      //     })
+      //   }
+      // })
     },
     scrollToBottom() {
       const container = this.$el.querySelector('#messages')
@@ -135,17 +164,35 @@ export default {
         container.scrollTop = container.scrollHeight
       }
     },
-    loadMoreItems($state) {
-      axios.get(`/api/thread/${this.threadId}?cursor=${this.cursor}`).then(({ data }) => {
-        this.thread = {
-          ...data.thread,
-          items: [...this.thread.items, ...data.thread.items],
-        }
-        this.cursor = data.cursor
+    async loadMoreItems($state) {
+      if (this.cursor === 'MINCURSOR') {
+        return $state.complete()
+      }
 
-        if (data.moreAvailable) $state.loaded()
-        else $state.complete()
-      })
+      console.log('load thread', this.threadId, this.cursor)
+      const { thread } = await get_thread(this.threadId, this.cursor)
+      console.log('thread', thread)
+
+      this.cursor = thread.prev_cursor
+      this.thread = {
+        ...thread,
+        items: [...this.thread.items, ...thread.items],
+      }
+
+      if (this.cursor !== 'MINCURSOR') {
+        $state.loaded()
+      }
+
+      // axios.get(`/api/thread/${this.threadId}?cursor=${this.cursor}`).then(({ data }) => {
+      //   this.thread = {
+      //     ...data.thread,
+      //     items: [...this.thread.items, ...data.thread.items],
+      //   }
+      //   this.cursor = data.cursor
+      //
+      //   if (data.moreAvailable) $state.loaded()
+      //   else $state.complete()
+      // })
     },
   },
 }

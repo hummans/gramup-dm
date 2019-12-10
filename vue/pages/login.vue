@@ -3,14 +3,13 @@
     <section class="container">
       <h1>Instagram Direct Messaging</h1>
       <form @submit.prevent="onSubmit">
-        <input v-model="username" type="text" name="username" placeholder="Username" />
-        <input v-model="password" type="password" name="password" placeholder="Password" />
+        <h3>Log in via Gram Up!</h3>
+        <br />
         <div v-if="error" class="error">{{ error }}</div>
+        <h4 v-if="username">@{{ username }}</h4>
+        <br />
         <Button type="submit" :is-loading="isLoading" :label="isLoading ? '...' : 'LOGIN'" />
       </form>
-      <div class="alert">
-        <span>Attention:</span> This app is only built for personal use and only allows to login <b>jonathan_wbn</b>.
-      </div>
     </section>
     <footer>
       <a href="https://github.com/JonathanWbn/instadm.app" target="_blank" aria-label="GitHub">
@@ -33,8 +32,11 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import instagram from '../instagram'
 import Button from '../components/button'
+
+window.instagram = instagram
 
 export default {
   components: {
@@ -45,10 +47,20 @@ export default {
       title: 'Login - Instagram Direct Messaging',
     }
   },
+  created() {
+    // window.instagram = instagram
+
+    if (instagram.info) {
+      window.location.href = '/'
+    }
+
+    // instagram.init()
+    //   .then(() => this.getUser())
+  },
   data() {
     return {
       // I'm hardcoding the username to limit the app to my personal use.
-      username: 'neuralcat',
+      username: null,
       password: null,
       isLoading: false,
       error: null,
@@ -56,22 +68,38 @@ export default {
   },
   methods: {
     async onSubmit() {
-      if (!this.password) {
-        this.error = 'Please provide your password.'
-        return
-      }
       this.isLoading = true
-      this.error = null
-      axios
-        .post('/api/login', { username: this.username, password: this.password })
-        .then(() => {
-          this.isLoading = false
-          window.location.href = '/'
-        })
-        .catch(err => {
-          this.isLoading = false
-          this.error = err.response.data || err.message
-        })
+
+      await instagram.init()
+
+      const { user } = await instagram.request({ method: 'check_login' })
+
+      if (user) {
+        this.username = user.username
+        window.location.href = '/'
+      } else {
+        this.error = 'Not logged in at Gram Up! Download'
+      }
+
+      this.isLoading = false
+
+      //
+      // if (!this.password) {
+      //   this.error = 'Please provide your password.'
+      //   return
+      // }
+      // this.isLoading = true
+      // this.error = null
+      // axios
+      //   .post('/api/login', { username: this.username, password: this.password })
+      //   .then(() => {
+      //     this.isLoading = false
+      //     window.location.href = '/'
+      //   })
+      //   .catch(err => {
+      //     this.isLoading = false
+      //     this.error = err.response.data || err.message
+      //   })
     },
   },
 }

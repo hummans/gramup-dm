@@ -62,7 +62,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import { send_direct_item } from '../instagram'
 import FormData from 'form-data'
 import { Picker, EmojiIndex } from 'emoji-mart-vue-fast'
 import 'emoji-mart-vue-fast/css/emoji-mart.css'
@@ -105,6 +106,7 @@ export default {
     },
     onFileUpload(e) {
       this.file = e.target.files[0]
+      alert('Photo upload is not supported yet!')
     },
     clearFile() {
       this.file = null
@@ -112,17 +114,23 @@ export default {
     sendPhoto() {
       const fd = new FormData()
       fd.append('file', this.file)
-      axios.post(`/api/send-photo/${this.threadId}`, fd).then(() => this.$emit('refetch'))
+      alert('Photo upload is not supported yet!')
+      // axios.post(`/api/send-photo/${this.threadId}`, fd).then(() => this.$emit('refetch'))
       this.file = null
     },
-    sendMessage() {
-      axios
-        .post('/api/send-message', {
-          thread_id: this.threadId,
-          message: this.message,
-        })
-        .then(() => this.$emit('refetch'))
+    async sendMessage() {
+
+      await send_direct_item({ thread: this.threadId }, this.message)
+
+      this.$emit('refetch')
       this.message = ''
+
+      // axios
+      //   .post('/api/send-message', {
+      //     thread_id: this.threadId,
+      //     message: this.message,
+      //   })
+      //   .then(() => this.$emit('refetch'))
     },
     toggleEmojiPicker() {
       this.showEmojiPicker = !this.showEmojiPicker

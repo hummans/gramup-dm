@@ -1,7 +1,7 @@
 <template>
   <div class="inbox-list">
     <div
-      v-for="(item, index) in inbox"
+      v-for="(item, index) in threads"
       :key="item.thread_id"
       :class="[
         'inbox-item',
@@ -24,7 +24,7 @@
       </div>
       <div class="last-activity">{{ item.last_activity_date }}</div>
     </div>
-    <infinite-loading v-if="inbox.length > 0" @infinite="getMoreInbox">
+    <infinite-loading v-if="threads.length > 0" @infinite="getMoreInbox">
       <div slot="no-more" class="no-more-threads">No more threads.</div>
       <div slot="no-results" class="no-more-threads">No more threads.</div>
     </infinite-loading>
@@ -32,7 +32,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import instagram, { get_inbox, get_thread } from '../instagram'
 import InfiniteLoading from 'vue-infinite-loading'
 import moment from 'moment'
 import UnreadIndicator from './unread-indicator'
@@ -60,7 +61,9 @@ export default {
   },
   data() {
     return {
-      inbox: [],
+      viewer: null,
+      inbox: null,
+      threads: [],
       cursor: null,
     }
   },
@@ -69,18 +72,35 @@ export default {
   },
   methods: {
     selectThread(index) {
-      this.$emit('select-thread', this.inbox[index].thread_id)
+      this.$emit('select-thread', this.threads[index].thread_id)
     },
-    getInbox() {
-      return axios
-        .get(this.cursor ? `/api/inbox?cursor=${this.cursor}` : '/api/inbox')
-        .then(({ data }) => {
-          this.cursor = data.cursor
-          this.inbox = [...this.inbox, ...data.inbox.map(formatThread)]
+    async getInbox() {
+      // if (!instagram.isConnected) {
+      //   return (window.location.href = '/login')
+      // }
 
-          return data
-        })
-        .catch(() => (window.location.href = '/login'))
+      const { inbox, viewer } = await get_inbox(this.cursor)
+
+      this.viewer = viewer
+      this.cursor = inbox.next_cursor.cursor_thread_v2_id
+      this.threads = [
+        ...this.threads,
+        ...inbox.threads.map(thread => formatThread(thread, viewer)),
+      ]
+
+      // this.selectThread(0)
+
+      return { moreAvailable: this.cursor !== 0 }
+
+      // return axios
+      //   .get(this.cursor ? `/api/inbox?cursor=${this.cursor}` : '/api/inbox')
+      //   .then(({ data }) => {
+      //     this.cursor = data.cursor
+      //     this.inbox = [...this.inbox, ...data.inbox.map(formatThread)]
+      //
+      //     return data
+      //   })
+      //   .catch(() => (window.location.href = '/login'))
     },
     getMoreInbox($state) {
       this.getInbox().then(data => {
@@ -166,14 +186,27 @@ export default {
 .inbox-item .text .content {
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: grey;
   line-height: 26px;
   margin-top: 2px;
   overflow: hidden;
   width: 295px;
 }
+.inbox-item:not(.has-unread) .text .content {
+  color: grey;
+}
 
 .no-more-threads {
   color: grey;
 }
+
+.inbox-item.has-unread .text .content {
+  font-weight: 500;
+}
+
+.inbox-item.has-unread {
+  /* background: #ffdcfc;
+  background: #ff70cc; */
+  background: #eaeaea;
+}
+
 </style>

@@ -11,7 +11,10 @@
         <img v-if="user" :src="user.profile_pic_url" />
       </div>
     </nav>
-    <div class="container">
+    <div class="container loading" v-if="!user">
+      <div class="loading-indicator">Loading...</div>
+    </div>
+    <div class="container" v-if="user">
       <InboxList :selected-thread-id="selectedThreadId" @select-thread="selectThread" />
       <ChatContainer :thread-id="selectedThreadId" :user="user" />
     </div>
@@ -19,10 +22,18 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import instagram from '../instagram'
 import InboxList from '../components/inbox-list'
 import ChatContainer from '../components/chat-container'
 import Button from '../components/button'
+
+window.instagram = instagram
+
+const goToLogin = () => {
+  console.log('Go to login')
+  window.location.href = '/login'
+}
 
 export default {
   components: {
@@ -37,20 +48,36 @@ export default {
     }
   },
   created() {
-    this.getUser()
+    instagram.init()
+      .then(() => this.getUser())
+      .catch((err) => {
+        console.error(err)
+        goToLogin()
+      })
   },
   methods: {
     selectThread(thread_id) {
       this.selectedThreadId = thread_id
     },
-    getUser() {
-      axios
-        .get('/api/user')
-        .then(({ data }) => (this.user = data))
-        .catch(() => (window.location.href = '/login'))
+    async getUser() {
+      const { user } = await instagram.request({ method: 'check_login' })
+
+      if (user) {
+        this.user = user
+      } else {
+        console.log('user', user)
+        goToLogin()
+      }
+
+      // axios
+      //   .get('/api/user')
+      //   .then(({ data }) => (this.user = data))
+      //   .catch(() => (window.location.href = '/login'))
     },
     logout() {
-      axios.post('/api/logout').then(() => (window.location.href = '/login'))
+      // axios.post('/api/logout')
+      instagram.request({ method: 'logout' })
+        .then(() => goToLogin())
     },
   },
 }
@@ -88,5 +115,14 @@ img {
   display: flex;
   flex-direction: row;
   height: calc(100% - 100px);
+}
+
+.container.loading {
+  align-items: center;
+  justify-content: center;
+}
+.container.loading .loading-indicator {
+  font-size: 32px;
+  color: grey;
 }
 </style>
