@@ -65,18 +65,42 @@ const honeybadger = Honeybadger.configure(config)
 
 window.instagram = instagram
 
+const has_unread = (thread, viewer_pk) => {
+  try {
+    return String(thread.last_activity_at) !== thread.last_seen_at[viewer_pk].timestamp
+  } catch (err) {
+    return false
+  }
+}
+
+const dialog_preview = (thread, presence) => {
+  try {
+    return (
+      thread.last_permanent_item.item_type === 'text'
+      ? thread.last_permanent_item.text
+      : `Last message ${moment(+thread.last_activity_at / 1000).fromNow()}`
+      // TODO: this needs to be "Active 2 hours ago", bu
+      // that value is not present in inbox, use get_presence
+    )
+  } catch (err) {
+    return 'Could not load last message'
+  }
+}
+
+const user_presence = (presence, user_pk) => {
+  try {
+    return presence[thread.users[0].pk]
+  } catch (err) {
+    return {}
+  }
+}
+
 const formatThread = (thread, viewer_pk = null, presence = {}) => ({
   ...thread,
-  has_unread: String(thread.last_activity_at) !== thread.last_seen_at[viewer_pk].timestamp,
+  has_unread: has_unread(thread, viewer_pk),
   last_activity_date: moment(+thread.last_activity_at / 1000).format('D MMM'),
-  user_presence: presence[thread.users[0].pk] || {},
-  content: (
-    thread.last_permanent_item.item_type === 'text'
-    ? thread.last_permanent_item.text
-    : `Last message ${moment(+thread.last_activity_at / 1000).fromNow()}`
-    // TODO: this needs to be "Active 2 hours ago", bu
-    // that value is not present in inbox, use get_presence
-  ),
+  user_presence: user_username(presence, thread.users[0].pk),
+  content: dialog_preview(thread, presence),
 })
 
 const goToLogin = (message) => {
