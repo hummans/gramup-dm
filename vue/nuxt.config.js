@@ -34,7 +34,25 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: [],
+  modules: [
+    [
+      '@nuxtjs/yandex-metrika',
+      {
+        id: '53083903',
+        webvisor: true,
+        clickmap: true,
+        // useCDN: false,
+        // trackLinks: true,
+        // accurateTrackBounce: true,
+      }
+    ],
+    [
+      '@nuxtjs/google-analytics',
+      {
+        id: 'UA-137776639-4',
+      }
+    ],
+  ],
 
   /*
    ** Build configuration
