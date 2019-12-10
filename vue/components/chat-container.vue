@@ -184,7 +184,10 @@ export default {
       this.cursor = thread.prev_cursor
       this.thread = {
         ...thread,
-        items: [...this.thread.items, ...thread.items],
+        items: [
+          ...((this.thread && this.thread.items) || []),
+          ...thread.items
+        ],
       }
 
       if (this.cursor !== 'MINCURSOR') {
