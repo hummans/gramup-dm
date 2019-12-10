@@ -1,8 +1,8 @@
 {
-  "name": "instadm-client",
+  "name": "gramup-dm-beta",
   "license": "MIT",
-  "description": "Vue client for instadm.app",
-  "author": "Jonathan Wieben",
+  "description": "Vue client for dm.gramup.me",
+  "author": "Jonathan Wieben, Aleksey Bykhun",
   "scripts": {
     "now-build": "nuxt generate",
     "now-dev": "nuxt"
@@ -14,7 +14,7 @@
     "form-data": "^2.5.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "nuxt": "^2.9.2",
+    "nuxt": "^2.10.2",
     "vue-infinite-loading": "^2.4.4"
   },
   "devDependencies": {
