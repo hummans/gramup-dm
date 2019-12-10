@@ -51,10 +51,17 @@
 <script>
 // import axios from 'axios'
 import moment from 'moment'
+import Honeybadger from 'honeybadger-js'
 import instagram, { get_inbox, get_thread, get_presence } from '../instagram'
 import InboxList from '../components/inbox-list'
 import ChatContainer from '../components/chat-container'
 import Button from '../components/button'
+
+const config = {
+  apiKey: '682efcf4',
+  environment: 'production'
+}
+const honeybadger = Honeybadger.configure(config)
 
 window.instagram = instagram
 
@@ -120,6 +127,12 @@ export default {
 
       if (user) {
         this.user = user
+
+        honeybadger.setContext({
+          user_id: user.pk,
+          user_username: user.username,
+          user_email: user.public_email,
+        })
       } else {
         console.log('user', user)
         goToLogin('not_logged_in')
