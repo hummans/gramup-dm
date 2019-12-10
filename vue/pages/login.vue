@@ -6,12 +6,15 @@
         <h3>
           Log in via <a href="https://get.gramup.me" target="_blank">Gram Up!</a>
         </h3>
-        <div>
-          Requires v1.5
-        </div>
+        <i>
+          (Requires v1.5)
+        </i>
         <br />
         <div v-if="error" class="error">{{ error }}</div>
-        <h4 v-if="username">@{{ username }}</h4>
+        <p>
+          Connected:
+          <strong v-if="username">@{{ username }}</strong>
+        </p>
         <br />
         <Button type="submit" :is-loading="isLoading" :label="isLoading ? '...' : 'LOGIN'" />
       </form>
@@ -50,15 +53,18 @@ export default {
       title: 'Login - Instagram Direct Messaging',
     }
   },
-  created() {
-    // window.instagram = instagram
-
-    if (instagram.info) {
-      window.location.href = '/'
-    }
-
-    // instagram.init()
-    //   .then(() => this.getUser())
+  async created() {
+    instagram.init()
+      .then(() => instagram.request({ method: 'check_login' }, true))
+      .then(({ user }) => {
+        if (user) {
+          this.username = user.username
+        }
+      })
+    //
+    // if (instagram.info && instagram.info.user) {
+    //   window.location.href = '/'
+    // }
   },
   data() {
     return {
@@ -76,7 +82,7 @@ export default {
 
         await instagram.init()
 
-        const { user } = await instagram.request({ method: 'check_login' })
+        const { user } = await instagram.request({ method: 'check_login' }, true)
 
         if (user) {
           this.username = user.username
