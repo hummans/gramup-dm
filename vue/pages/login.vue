@@ -1,9 +1,11 @@
 <template>
   <div>
     <section class="container">
-      <h1>Instagram Direct Messaging</h1>
+      <h1>Direct Messages in Browser</h1>
       <form @submit.prevent="onSubmit">
-        <h3>Log in via Gram Up!</h3>
+        <h3>
+          Log in via <a href="https://get.gramup.me" target="_blank">Gram Up!</a>
+        </h3>
         <br />
         <div v-if="error" class="error">{{ error }}</div>
         <h4 v-if="username">@{{ username }}</h4>
