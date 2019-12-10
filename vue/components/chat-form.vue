@@ -39,6 +39,8 @@
         name="message"
         class="text-input"
         placeholder="Type here..."
+        v-on:keydown="onTextChange"
+        :disabled="isDisabled"
       />
       <div v-if="filePreviewUrl" class="file-preview-close" @click="clearFile">
         <svg width="20px" height="20px" viewBox="0 0 7 7" aria-label="delete">
@@ -84,6 +86,7 @@ export default {
   },
   data() {
     return {
+      isDisabled: false,
       message: '',
       file: null,
       showEmojiPicker: false,
@@ -94,6 +97,9 @@ export default {
     filePreviewUrl() {
       return this.file && window.URL.createObjectURL(this.file)
     },
+  },
+  mounted () {
+    this.$refs['text-input'].focus()
   },
   methods: {
     onSubmit() {
@@ -111,6 +117,12 @@ export default {
     clearFile() {
       this.file = null
     },
+    onTextChange(e) {
+      // if (e.keyCode === 13 && (e.metaKey || e.shiftKey)) {
+      if (e.keyCode === 13 && !e.shiftKey) {
+        this.onSubmit()
+      }
+    },
     sendPhoto() {
       const fd = new FormData()
       fd.append('file', this.file)
@@ -119,11 +131,15 @@ export default {
       this.file = null
     },
     async sendMessage() {
+      this.isDisabled = true
 
       await send_direct_item({ thread: this.threadId }, this.message)
 
       this.$emit('refetch')
       this.message = ''
+
+      this.isDisabled = false
+      this.$refs['text-input'].focus()
 
       // axios
       //   .post('/api/send-message', {
@@ -178,7 +194,7 @@ form {
 }
 
 .text-input:focus {
-  height: 80px;
+  height: 60px;
 }
 
 .file-input-label {
