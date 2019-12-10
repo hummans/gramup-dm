@@ -99,7 +99,7 @@ const formatThread = (thread, viewer_pk = null, presence = {}) => ({
   ...thread,
   has_unread: has_unread(thread, viewer_pk),
   last_activity_date: moment(+thread.last_activity_at / 1000).format('D MMM'),
-  user_presence: user_username(presence, thread.users[0].pk),
+  user_presence: user_presence(presence, thread.users[0].pk),
   content: dialog_preview(thread, presence),
 })
 
