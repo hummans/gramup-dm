@@ -32,10 +32,24 @@ class App extends Component {
 
     const me = viewer.pk
 
+    this.initNotifications()
+
     this.setState({
       me,
       threads,
     })
+  }
+
+  async initNotifications () {
+    const perm = await Notification.requestPermission()
+
+    console.log('perm', perm)
+
+    instagram.request({ method: 'config', params: [{
+      NOTIFICATIONS: perm,
+    }] }, true)
+
+    return perm
   }
 
   async maybeSendHey() {
