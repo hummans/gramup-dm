@@ -25,7 +25,11 @@ export const send_direct_item = async ({ thread, users, username }, text) => {
 }
 
 export const get_presence = async () => {
-  return instagram.request({ method: 'get_presence' }, true)
+  try {
+    return await instagram.request({ method: 'get_presence' }, true)
+  } catch (err) {
+    return { user_presence: {}, status: 'not_available' }
+  }
 }
 
 export const mark_direct_seen = async (thread_id, thread_item_id) => {
