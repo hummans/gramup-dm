@@ -5,7 +5,7 @@ class InstagramError extends Error {
     super(error)
     this.status = status
     this.error = error
-    this.message = `InstagramError ${status}: ${error.response ? error.response.message : error}`
+    this.message = `InstagramError ${status}: ${error.response ? error.response.message : error.message}`
     this.response = error.response
   }
 }
