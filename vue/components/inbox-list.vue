@@ -3,7 +3,11 @@
     <div
       v-for="(item, index) in inbox"
       :key="item.thread_id"
-      :class="['inbox-item', selectedThreadId === item.thread_id && 'selected']"
+      :class="[
+        'inbox-item',
+        item.has_unread && 'has-unread',
+        selectedThreadId === item.thread_id && 'selected',
+      ]"
       @click="selectThread(index)"
     >
       <div class="image-wrapper">
@@ -11,7 +15,11 @@
         <div v-if="item.users.length > 1" class="more-users">+{{ item.users.length - 1 }}</div>
       </div>
       <div class="text">
-        <p class="title">{{ item.thread_title }}</p>
+        <p class="title">
+          {{ item.thread_title }}
+
+          <UnreadIndicator fill="#75a3ff" :visible="item.has_unread" />
+        </p>
         <p class="content">{{ item.content }}</p>
       </div>
       <div class="last-activity">{{ item.last_activity_date }}</div>
@@ -27,16 +35,25 @@
 import axios from 'axios'
 import InfiniteLoading from 'vue-infinite-loading'
 import moment from 'moment'
+import UnreadIndicator from './unread-indicator'
 
-const formatThread = thread => ({
+const formatThread = (thread, viewer) => ({
   ...thread,
+  has_unread: String(thread.last_activity_at) !== thread.last_seen_at[viewer.pk].timestamp,
   last_activity_date: moment(+thread.last_activity_at / 1000).format('D MMM'),
-  content: (thread.last_permanent_item.item_type === 'text' && thread.last_permanent_item.text) || '',
+  content: (
+    thread.last_permanent_item.item_type === 'text'
+    ? thread.last_permanent_item.text
+    : `Last message ${moment(+thread.last_activity_at / 1000).fromNow()}`
+    // TODO: this needs to be "Active 2 hours ago", bu
+    // that value is not present in inbox, use get_presence
+  ),
 })
 
 export default {
   components: {
     InfiniteLoading,
+    UnreadIndicator,
   },
   props: {
     selectedThreadId: String,
