@@ -72,9 +72,11 @@ const formatThread = (thread, viewer_pk = null, presence = {}) => ({
   ),
 })
 
-const goToLogin = () => {
+const goToLogin = (message) => {
   console.log('Go to login')
-  window.location.href = '/login'
+  console.error(message)
+  debugger;
+  window.location.href = `/login?error=${message}`
 }
 
 export default {
@@ -102,7 +104,7 @@ export default {
       .then(() => this.isLoading = false)
       .catch((err) => {
         console.error(err)
-        goToLogin()
+        goToLogin(err.message)
       })
   },
   methods: {
@@ -120,7 +122,7 @@ export default {
         this.user = user
       } else {
         console.log('user', user)
-        goToLogin()
+        goToLogin('not_logged_in')
       }
 
       // axios
@@ -131,16 +133,19 @@ export default {
     logout() {
       // axios.post('/api/logout')
       instagram.request({ method: 'logout' })
-        .then(() => goToLogin())
+        .then(() => goToLogin('logout'))
     },
 
     async getInbox(cursor = null) {
       if (!instagram.isConnected) {
-        return goToLogin()
+        return goToLogin('not connected')
       }
 
       const { inbox, viewer } = await get_inbox(cursor)
+      console.log('inbox', inbox)
       const { user_presence } = await get_presence()
+      console.log('user_presence', user_presence)
+      // const user_presence = {}
 
       this.viewer = viewer
       this.nextCursor = inbox.next_cursor.cursor_thread_v2_id
