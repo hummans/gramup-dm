@@ -7,7 +7,19 @@
         ></path>
       </svg>
       <div>
-        Powered by Gram Up!
+        Powered by
+        <a
+          href="https://gramup.me"
+          target="_blank"
+          style="color:black"
+        >Gram Up!</a>
+        ©
+        Made by
+        <a
+          href="https://github.com/JonathanWbn/instadm.app"
+          target="_blank"
+          style="color:black"
+        >JonathanWbn</a>
       </div>
       <div class="menu">
         <div v-if="user" class="username">@{{ user.username }}</div>
