@@ -68,20 +68,25 @@ export default {
   },
   methods: {
     async onSubmit() {
-      this.isLoading = true
+      try {
+        this.isLoading = true
 
-      await instagram.init()
+        await instagram.init()
 
-      const { user } = await instagram.request({ method: 'check_login' })
+        const { user } = await instagram.request({ method: 'check_login' })
 
-      if (user) {
-        this.username = user.username
-        window.location.href = '/'
-      } else {
-        this.error = 'Not logged in at Gram Up! Download'
+        if (user) {
+          this.username = user.username
+          window.location.href = '/'
+        } else {
+          this.error = 'Not logged in at Gram Up!'
+        }
+      } catch (err) {
+        this.error = 'Not installed Gram Up! or not logged in. Press Gram Up! logo in Chrome bar'
+
+      } finally {
+        this.isLoading = false
       }
-
-      this.isLoading = false
 
       //
       // if (!this.password) {
