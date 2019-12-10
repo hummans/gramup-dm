@@ -37,7 +37,21 @@ class Topbar extends Component {
 
           <li className="nav-item">
             <span className="nav-link">
-              <img src={icon} height="30" alt="logo"/>&nbsp;<span>Instagram Direct by</span>&nbsp;<a href="https://gramup.me" target="_blank" rel="noopener noreferrer">Gram Up!</a>
+              <a href="https://gramup-dm-beta.caffeinum.now.sh/" target="_blank" rel="noopener noreferrer">
+                Try new GRAMUP DM BETA version
+              </a>
+            </span>
+          </li>
+
+          <li className="nav-item">
+            <span className="nav-link">
+              <img src={icon} height="30" alt="logo"/>
+              &nbsp;
+              <span>Instagram Direct by</span>
+              &nbsp;
+              <a href="https://gramup.me" target="_blank" rel="noopener noreferrer">
+                Gram Up!
+              </a>
             </span>
           </li>
 
