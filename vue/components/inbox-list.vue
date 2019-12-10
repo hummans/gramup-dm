@@ -88,7 +88,7 @@ export default {
         ...inbox.threads.map(thread => formatThread(thread, viewer)),
       ]
 
-      // this.selectThread(0)
+      this.selectThread(0)
 
       return { moreAvailable: this.cursor !== 0 }
 
