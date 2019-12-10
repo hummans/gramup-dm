@@ -6,6 +6,9 @@
         <h3>
           Log in via <a href="https://get.gramup.me" target="_blank">Gram Up!</a>
         </h3>
+        <div>
+          Requires v1.5
+        </div>
         <br />
         <div v-if="error" class="error">{{ error }}</div>
         <h4 v-if="username">@{{ username }}</h4>
