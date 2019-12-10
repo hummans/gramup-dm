@@ -11,6 +11,25 @@
       </a>
     </div>
     <div
+      v-if="item.media_share.media_type === 8"
+      class="container carousel_media"
+    >
+      <div
+        v-for="media in item.media_share.carousel_media"
+        :key="media.id"
+        :style="{ height: `${(media.original_height / media.original_width) * 200}px` }"
+      >
+        <a
+          v-if="media.image_versions2.candidates"
+          :href="media.image_versions2.candidates[0].url"
+          target="_blank"
+        >
+          <img :src="media.image_versions2.candidates[0].url" />
+        </a>
+      </div>
+
+    </div>
+    <div
       v-else-if="item.media_share.media_type === 2"
       class="container"
       :style="{ height: `${(media.height / media.width) * 200}px` }"
@@ -19,7 +38,11 @@
         <source :src="media.url" type="video/mp4" />
       </video>
     </div>
+    <div class="caption">
+      {{ item.media_share.caption.text }}
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -54,11 +77,16 @@ export default {
   overflow: hidden;
 }
 
-.header {
+.header,
+.caption {
   background-color: white;
   padding: 5px;
   text-align: center;
   border-bottom: 1px solid black;
+}
+
+.caption {
+  max-width: 200px;
 }
 
 img,
