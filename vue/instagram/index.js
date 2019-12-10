@@ -4,6 +4,7 @@ import {
   get_user_info,
   get_inbox,
   get_thread,
+  get_presence,
   send_direct_item,
 } from './service'
 
@@ -13,6 +14,7 @@ export {
   get_user_info,
   get_inbox,
   get_thread,
+  get_presence,
   send_direct_item,
 }
 

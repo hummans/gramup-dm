@@ -11,7 +11,10 @@
       @click="selectThread(index)"
     >
       <div class="image-wrapper">
-        <img :src="item.users[0].profile_pic_url" />
+        <img
+          :class="[ item.user_presence.is_active && 'active' ]"
+          :src="item.users[0].profile_pic_url"
+        />
         <div v-if="item.users.length > 1" class="more-users">+{{ item.users.length - 1 }}</div>
       </div>
       <div class="text">
@@ -33,15 +36,16 @@
 
 <script>
 // import axios from 'axios'
-import instagram, { get_inbox, get_thread } from '../instagram'
+import instagram, { get_inbox, get_thread, get_presence } from '../instagram'
 import InfiniteLoading from 'vue-infinite-loading'
 import moment from 'moment'
 import UnreadIndicator from './unread-indicator'
 
-const formatThread = (thread, viewer) => ({
+const formatThread = (thread, viewer_pk = null, presence = {}) => ({
   ...thread,
-  has_unread: String(thread.last_activity_at) !== thread.last_seen_at[viewer.pk].timestamp,
+  has_unread: String(thread.last_activity_at) !== thread.last_seen_at[viewer_pk].timestamp,
   last_activity_date: moment(+thread.last_activity_at / 1000).format('D MMM'),
+  user_presence: presence[thread.users[0].pk] || {},
   content: (
     thread.last_permanent_item.item_type === 'text'
     ? thread.last_permanent_item.text
@@ -80,12 +84,13 @@ export default {
       // }
 
       const { inbox, viewer } = await get_inbox(this.cursor)
+      const { user_presence } = await get_presence()
 
       this.viewer = viewer
       this.cursor = inbox.next_cursor.cursor_thread_v2_id
       this.threads = [
         ...this.threads,
-        ...inbox.threads.map(thread => formatThread(thread, viewer)),
+        ...inbox.threads.map(thread => formatThread(thread, viewer.pk, user_presence)),
       ]
 
       this.selectThread(0)
@@ -152,6 +157,9 @@ export default {
   border-radius: 100%;
   height: 50px;
   min-width: 50px;
+}
+.image-wrapper img.active {
+  border: solid 4px lightblue;
 }
 
 .more-users {
