@@ -58,7 +58,17 @@
           ></path>
         </svg>
       </label>
-      <Button type="submit" label="Send" design="text" />
+      <Button
+        type="submit"
+        label="Send"
+        design="text"
+      />
+      <Button
+        v-if="markReadVisible"
+        v-on:click="$emit('mark-read')"
+        label="Mark Read"
+        class="text"
+      />
     </form>
   </div>
 </template>
@@ -79,6 +89,7 @@ export default {
     Button,
   },
   props: {
+    markReadVisible: Boolean,
     threadId: {
       type: String,
       required: true,

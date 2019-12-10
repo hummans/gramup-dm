@@ -28,6 +28,7 @@
       />
       <ChatContainer
         :thread-id="selectedThreadId"
+        :thread-info="selectedThread"
         :user="user"
         @refetch-inbox="refetchInbox"
       />
@@ -73,6 +74,7 @@ export default {
   data() {
     return {
       selectedThreadId: null,
+      selectedThread: null,
       user: null,
       isLoading: true,
 
@@ -94,6 +96,7 @@ export default {
   methods: {
     selectThread(thread_id) {
       this.selectedThreadId = thread_id
+      this.selectedThread = this.threads.find(t => t.thread_id == thread_id)
     },
     refetchInbox() {
       this.getInbox()

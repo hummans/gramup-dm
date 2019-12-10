@@ -23,14 +23,13 @@
         <StoryShare v-else-if="item.item_type === 'story_share'" :item="item" :friend="item.user" />
       </div>
     </div>
-    <ChatForm v-if="threadId" :thread-id="threadId" @refetch="refetchItems" />
-    <button
-      v-if="thread && thread.has_unread"
-      v-on:click="markRead"
-      class="button-mark-read"
-    >
-      Mark All Read
-    </button>
+    <ChatForm
+      v-if="threadId"
+      :thread-id="threadId"
+      :mark-read-visible="threadInfo.has_unread"
+      @mark-read="markRead"
+      @refetch="refetchItems"
+    />
 
   </div>
 </template>
@@ -65,6 +64,7 @@ export default {
     InfiniteLoading,
   },
   props: {
+    threadInfo: Object,
     threadId: {
       type: String,
     },
