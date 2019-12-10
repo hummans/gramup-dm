@@ -11,28 +11,52 @@
         <img v-if="user" :src="user.profile_pic_url" />
       </div>
     </nav>
-    <div class="container loading" v-if="!user">
+    <div class="container loading" v-if="isLoading">
       <div class="loading-indicator">Loading...</div>
     </div>
-    <div class="container" v-if="user">
-      <InboxList :selected-thread-id="selectedThreadId" @select-thread="selectThread" />
-      <ChatContainer :thread-id="selectedThreadId" :user="user" />
+    <div class="container" v-if="!isLoading">
+      <InboxList
+        :threads="threads"
+        :selected-thread-id="selectedThreadId"
+        @select-thread="selectThread"
+        @get-more-inbox="getMoreInbox"
+      />
+      <ChatContainer
+        :thread-id="selectedThreadId"
+        :user="user"
+        @refetch-inbox="refetchInbox"
+      />
     </div>
   </div>
 </template>
 
 <script>
 // import axios from 'axios'
-import instagram from '../instagram'
+import moment from 'moment'
+import instagram, { get_inbox, get_thread, get_presence } from '../instagram'
 import InboxList from '../components/inbox-list'
 import ChatContainer from '../components/chat-container'
 import Button from '../components/button'
 
 window.instagram = instagram
 
+const formatThread = (thread, viewer_pk = null, presence = {}) => ({
+  ...thread,
+  has_unread: String(thread.last_activity_at) !== thread.last_seen_at[viewer_pk].timestamp,
+  last_activity_date: moment(+thread.last_activity_at / 1000).format('D MMM'),
+  user_presence: presence[thread.users[0].pk] || {},
+  content: (
+    thread.last_permanent_item.item_type === 'text'
+    ? thread.last_permanent_item.text
+    : `Last message ${moment(+thread.last_activity_at / 1000).fromNow()}`
+    // TODO: this needs to be "Active 2 hours ago", bu
+    // that value is not present in inbox, use get_presence
+  ),
+})
+
 const goToLogin = () => {
   console.log('Go to login')
-  window.location.href = '/login'
+  // window.location.href = '/login'
 }
 
 export default {
@@ -45,11 +69,18 @@ export default {
     return {
       selectedThreadId: null,
       user: null,
+      isLoading: true,
+
+      viewer: null,
+      threads: [],
+      nextCursor: null,
     }
   },
   created() {
     instagram.init()
       .then(() => this.getUser())
+      .then(() => this.getInbox())
+      .then(() => this.isLoading = false)
       .catch((err) => {
         console.error(err)
         goToLogin()
@@ -58,6 +89,9 @@ export default {
   methods: {
     selectThread(thread_id) {
       this.selectedThreadId = thread_id
+    },
+    refetchInbox() {
+      this.getInbox()
     },
     async getUser() {
       const { user } = await instagram.request({ method: 'check_login' })
@@ -78,6 +112,48 @@ export default {
       // axios.post('/api/logout')
       instagram.request({ method: 'logout' })
         .then(() => goToLogin())
+    },
+
+    async getInbox(cursor = null) {
+      if (!instagram.isConnected) {
+        return goToLogin()
+      }
+
+      const { inbox, viewer } = await get_inbox(cursor)
+      const { user_presence } = await get_presence()
+
+      this.viewer = viewer
+      this.nextCursor = inbox.next_cursor.cursor_thread_v2_id
+
+      const threads = inbox.threads.map(thread => formatThread(thread, viewer.pk, user_presence))
+
+      if (!cursor) {
+        this.threads = threads
+      } else {
+        this.threads = [
+          ...this.threads,
+          ...threads,
+        ]
+      }
+
+      return { moreAvailable: this.nextCursor !== 0 }
+
+      // return axios
+      //   .get(this.nextCursor ? `/api/inbox?cursor=${this.nextCursor}` : '/api/inbox')
+      //   .then(({ data }) => {
+      //     this.nextCursor = data.cursor
+      //     this.inbox = [...this.inbox, ...data.inbox.map(formatThread)]
+      //
+      //     return data
+      //   })
+      //   .catch(() => (window.location.href = '/login'))
+    },
+    getMoreInbox($state) {
+      $state.complete()
+      // this.getInbox(this.nextCursor).then(data => {
+      //   if (data.moreAvailable) $state.loaded()
+      //   else $state.complete()
+      // })
     },
   },
 }

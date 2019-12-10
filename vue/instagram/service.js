@@ -27,3 +27,7 @@ export const send_direct_item = async ({ thread, users, username }, text) => {
 export const get_presence = async () => {
   return instagram.request({ method: 'get_presence' }, true)
 }
+
+export const mark_direct_seen = async (thread_id, thread_item_id) => {
+  return instagram.request({ method: 'mark_direct_seen', params: [ thread_id, thread_item_id ] }, true)
+}

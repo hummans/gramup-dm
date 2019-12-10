@@ -24,6 +24,14 @@
       </div>
     </div>
     <ChatForm v-if="threadId" :thread-id="threadId" @refetch="refetchItems" />
+    <button
+      v-if="thread && thread.has_unread"
+      v-on:click="markRead"
+      class="button-mark-read"
+    >
+      Mark All Read
+    </button>
+
   </div>
 </template>
 
@@ -40,7 +48,7 @@ import StoryShare from './chat-items/story-share'
 import ChatForm from './chat-form'
 // import axios from 'axios'
 
-import { get_thread } from '../instagram'
+import { get_thread, mark_direct_seen } from '../instagram'
 import _ from 'lodash'
 
 export default {
@@ -181,6 +189,8 @@ export default {
 
       if (this.cursor !== 'MINCURSOR') {
         $state.loaded()
+      } else {
+        $state.complete()
       }
 
       // axios.get(`/api/thread/${this.threadId}?cursor=${this.cursor}`).then(({ data }) => {
@@ -194,6 +204,20 @@ export default {
       //   else $state.complete()
       // })
     },
+    async markRead() {
+      const thread = this.thread
+
+      const [ last_item ] = thread.items
+
+      const { status, ...data } = await mark_direct_seen(thread.thread_id, last_item.item_id)
+
+      if (status === 'ok') {
+        this.$emit('refetch-inbox')
+      } else {
+        console.error('Cant mark direct seen', status, data)
+      }
+
+    }
   },
 }
 </script>
@@ -263,5 +287,12 @@ export default {
 
 .no-more-messages {
   color: grey;
+}
+
+.button-mark-read {
+  /* border: none; */
+  box-shadow: 0 2px 4px rgba(50, 50, 93, 0.1);
+  margin: 5px 5px;
+  border-radius: 5px;
 }
 </style>

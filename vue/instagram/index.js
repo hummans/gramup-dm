@@ -6,6 +6,7 @@ import {
   get_thread,
   get_presence,
   send_direct_item,
+  mark_direct_seen,
 } from './service'
 
 export {
@@ -16,6 +17,7 @@ export {
   get_thread,
   get_presence,
   send_direct_item,
+  mark_direct_seen,
 }
 
 export default instagram
