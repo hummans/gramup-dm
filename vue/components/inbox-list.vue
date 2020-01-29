@@ -1,5 +1,20 @@
 <template>
   <div class="inbox-list">
+    <div class="inbox-item has-unread" @click="openFamily()" style="background: rgb(255, 223, 229)">
+      <div class="image-wrapper">
+        <img
+          src="https://dashboard.gramup.me/icon.965ea170.png"
+          class=""
+        />
+      </div>
+      <div class="text">
+        <p class="title">
+          GramUp! Family
+        </p>
+        <p class="content" style="font-weight: normal;">Free like sharing group</p>
+      </div>
+      <div class="last-activity">Join Now!</div>
+    </div>
     <div
       v-for="(item, index) in threads"
       :key="item.thread_id"
@@ -61,7 +76,10 @@ export default {
     },
     getMoreInbox($state) {
       this.$emit('get-more-inbox', $state)
-    }
+    },
+    openFamily() {
+      window.open('https://dashboard.gramup.me/family?ref=gramup-dm')
+    },
   },
 }
 </script>
