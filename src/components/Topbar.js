@@ -6,15 +6,10 @@ import icon from '../icon.png'
 const CONNECTION = {}
 
 class Topbar extends Component {
+  codefundAdRef = React.createRef()
 
   componentDidMount () {
-    this.codefundAdRef = null
     this.updateAd()
-
-    // setInterval(() => {
-    //  this.updateAd()
-    //  console.log('ad updated')
-    // }, 1000 * 60 * (1000 + 9 * Math.random()));
   }
 
   updateAd() {
@@ -34,7 +29,7 @@ class Topbar extends Component {
     script.src = "https://native.propellerclick.com/1?z=3070045";
     script.async = true;
 
-    document.body.appendChild(script);
+    this.codefundAdRef.current.appendChild(script);
   }
 
   render () {
@@ -66,8 +61,8 @@ class Topbar extends Component {
 
           <li className="nav-item">
             <span className="nav-link">
-              <a href="https://gramup-dm-beta.caffeinum.now.sh/" target="_blank" rel="noopener noreferrer">
-                Try new GRAMUP DM BETA version
+              <a href="https://gramup-dm-beta.caffeinum.now.sh/?from=paid" target="_blank" rel="noopener noreferrer">
+                NO ADS for 1$/month
               </a>
             </span>
           </li>
@@ -76,7 +71,8 @@ class Topbar extends Component {
 
           <li className="nav-item">
             <span className="nav-link">
-              <div id="codefund" ref={el => this.codefundAdRef = el}>CODEFUND AD</div>
+              <div id="codefund" style={{marginTop: '-25px'}} ref={this.codefundAdRef}>
+              </div>
             </span>
           </li>
 
