@@ -3,17 +3,17 @@
     <div class="inbox-item has-unread" @click="openFamily()" style="background: rgb(255, 223, 229)">
       <div class="image-wrapper">
         <img
-          src="https://dashboard.gramup.me/icon.965ea170.png"
+          src="../static/likeup_square.png"
           class=""
         />
       </div>
       <div class="text">
         <p class="title">
-          GramUp! Family
+          LikeUp Engagement pod
         </p>
-        <p class="content" style="font-weight: normal;">Free like sharing group</p>
+        <p class="content" style="font-weight: normal;">Boost your posts into Trending!</p>
       </div>
-      <div class="last-activity">Join Now!</div>
+      <div class="last-activity">Join now</div>
     </div>
     <div
       v-for="(item, index) in threads"
@@ -78,7 +78,7 @@ export default {
       this.$emit('get-more-inbox', $state)
     },
     openFamily() {
-      window.open('https://dashboard.gramup.me/family?ref=gramup-dm')
+      window.open('https://likeup.me/?ref=gramup-dm')
     },
   },
 }
