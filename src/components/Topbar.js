@@ -61,8 +61,8 @@ class Topbar extends Component {
 
           <li className="nav-item">
             <span className="nav-link">
-              <a href="https://gramup-dm-beta.caffeinum.now.sh/?from=paid" target="_blank" rel="noopener noreferrer">
-                NO ADS for 1$/month
+              <a href="https://likeup.me/?ref=dm.gramup.me" target="_blank" rel="noopener noreferrer">
+                Join LikeUp – Boost your post into Trending
               </a>
             </span>
           </li>
