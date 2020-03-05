@@ -61,7 +61,8 @@ class Topbar extends Component {
 
           <li className="nav-item">
             <span className="nav-link">
-              <a href="https://likeup.me/?ref=dm.gramup.me" target="_blank" rel="noopener noreferrer">
+              {/* eslint-disable-next-line react/jsx-no-target-blank */}
+              <a href="https://likeup.me/?ref=dm.gramup.me" target="_blank">
                 Join LikeUp – Boost your post into Trending
               </a>
             </span>
