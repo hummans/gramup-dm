@@ -6,18 +6,30 @@ import icon from '../icon.png'
 const CONNECTION = {}
 
 class Topbar extends Component {
+  codefundAdRef = React.createRef()
 
   componentDidMount () {
-    this.codefundAdRef = null
     this.updateAd()
-
-    setInterval(() => {
-      this.updateAd()
-      console.log('ad updated')
-    }, 1000 * 60 * (1000 + 9 * Math.random()));
   }
 
   updateAd() {
+    const ad_script = document.querySelector("#codefund-ad-script")
+    const ad = document.querySelector("#codefund")
+
+    if (ad_script) {
+      ad_script.remove()
+    }
+
+    ad.innerHTML = "";
+
+    const script = document.createElement("script");
+
+    script.id = "codefund-ad-script";
+    script.dataset.cfasync = false;
+    script.src = "https://native.propellerclick.com/1?z=3070045";
+    script.async = true;
+
+    this.codefundAdRef.current.appendChild(script);
   }
 
   render () {
@@ -33,24 +45,25 @@ class Topbar extends Component {
         </button>
 
         {/* <!-- Topbar Navbar  --> */}
-        <ul className="navbar-nav ml-auto">
+        <ul className="navbar-nav">
 
           <li className="nav-item">
             <span className="nav-link">
-              <a href="https://gramup-dm-beta.caffeinum.now.sh/" target="_blank" rel="noopener noreferrer">
-                Try new GRAMUP DM BETA version
+              <img src={icon} height="30" alt="logo" />
+              &nbsp;
+              <span>DM</span>
+              &nbsp;
+              <a href="https://gramup.me" target="_blank" rel="noopener noreferrer">
+                Gram Up!
               </a>
             </span>
           </li>
 
           <li className="nav-item">
             <span className="nav-link">
-              <img src={icon} height="30" alt="logo"/>
-              &nbsp;
-              <span>Instagram Direct by</span>
-              &nbsp;
-              <a href="https://gramup.me" target="_blank" rel="noopener noreferrer">
-                Gram Up!
+              {/* eslint-disable-next-line react/jsx-no-target-blank */}
+              <a href="https://likeup.me/?ref=dm.gramup.me" target="_blank">
+                Join LikeUp – Boost your post into Trending
               </a>
             </span>
           </li>
@@ -59,9 +72,8 @@ class Topbar extends Component {
 
           <li className="nav-item">
             <span className="nav-link">
-              <a href="http://deloplen.com/afu.php?zoneid=2940718">
-                Click to save Gram Up!
-              </a>
+              <div id="codefund" style={{marginTop: '-25px'}} ref={this.codefundAdRef}>
+              </div>
             </span>
           </li>
 
