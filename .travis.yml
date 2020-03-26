@@ -2,10 +2,11 @@ language: node_js
 node_js:
 - "10"
 install:
+# - npm i
+- cd vue
 - npm i
 script:
-- npm run build
-- cd vue
+# - npm run build
 - npm run build:gh-pages
 deploy:
     provider: pages
