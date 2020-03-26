@@ -1,13 +1,17 @@
 # Direct Messages for Gram Up!
 
-[![Build Status](https://travis-ci.org/instagrambot/gramup-dm.svg?branch=master)](https://travis-ci.org/instagrambot/gramup-dm) 
+[![Build Status](https://travis-ci.org/instagrambot/gramup-dm.svg?branch=master)](https://travis-ci.org/instagrambot/gramup-dm)
 [![Paypal](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/okhlopkov)
 
 We are trying to create a free Direct Messages app for your Instagram. This is not even a early-alpha version now, so please use it for your own risk! This runs only in Desktop Google Chrome and requires our [extension](https://get.gramup.me) to be installed.
 
 ## How to use it
 
-Since this project is a part of the [Gram Up!](https://gramup.me/) project, you need to install our [extension](https://get.gramup.me/) for your Google Chrome. 
+Since this project is a part of the [Gram Up!](https://gramup.me/) project, you need to install our [extension](https://get.gramup.me/) for your Google Chrome.
+
+## Credit
+
+New version uses instadm.app frontend with some adaptations and improvements. Check out original project here: https://github.com/JonathanWbn/instadm.app
 
 ## Contibution
 

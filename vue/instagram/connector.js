@@ -156,8 +156,16 @@ class InstagramConnector {
       if (!this.port) {
         chrome.runtime.sendMessage(this._currend_id, data, null, onResponse)
       } else {
-        this.port.onMessage.addListener(onResponse)
-        this.port.postMessage({ req_id, ...data })
+        const trySend = () => {
+          this.port.onMessage.addListener(onResponse)
+          this.port.postMessage({ req_id, ...data })
+        }
+
+        try {
+          trySend()
+        } catch (err) {
+          this.init().then(() => trySend())
+        }
       }
 
       if (wake && !wasWorking) this.kill()
@@ -176,7 +184,7 @@ class InstagramConnector {
 
       const shouldStop = yield users
 
-      if (shouldStop || _users.length > limit) {
+      if (_users.length > limit) {
         return _users
       }
     } while (true)
