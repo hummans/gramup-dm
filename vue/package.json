@@ -4,8 +4,10 @@
   "description": "Vue client for dm.gramup.me",
   "author": "Jonathan Wieben, Aleksey Bykhun",
   "scripts": {
-    "now-build": "nuxt generate",
-    "now-dev": "nuxt"
+    "deploy:gh-pages": "npx gh-pages -d dist",
+    "build:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt build",
+    "build": "nuxt generate",
+    "dev": "nuxt"
   },
   "dependencies": {
     "@nuxtjs/google-analytics": "^2.2.0",
@@ -20,6 +22,7 @@
     "vue-infinite-loading": "^2.4.4"
   },
   "devDependencies": {
+    "gh-pages": "^2.0.1",
     "prettier": "^1.18.2"
   }
 }

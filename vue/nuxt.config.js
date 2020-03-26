@@ -58,6 +58,7 @@ module.exports = {
    ** Build configuration
    */
   build: {
+    publicPath: '/nuxt/',
     postcss: {
       preset: {
         features: {
