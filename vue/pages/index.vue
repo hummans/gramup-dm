@@ -21,6 +21,18 @@
           style="color:black"
         >JonathanWbn</a>
       </div>
+
+      <div>
+        <a
+          href="https://gramup-dm.caffeinum.now.sh"
+          target="_blank"
+          style="color:black"
+        >
+        REVERT TO OLD DESIGN
+        </a>
+        
+      </div>
+
       <div class="menu">
         <div v-if="user" class="username">@{{ user.username }}</div>
         &nbsp;
